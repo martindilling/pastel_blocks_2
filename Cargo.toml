@@ -1,0 +1,10 @@
+[package]
+name = "pastel_blocks_2"
+version = "0.1.0"
+authors = ["Martin Dilling-Hansen <martindilling@gmail.com>"]
+
+[dependencies]
+piston_window = "0.39.0"
+gfx_device_gl = "0.9.0"
+find_folder = "0.3.0"
+image = "0.7.2"

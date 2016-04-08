@@ -1,0 +1,25 @@
+GIMP Palette
+Name: Pastel Blocks 2
+Columns: 3
+#
+255 200 200	Red Changer
+255   0   0	Red
+127   0   0	Red Danger
+200 255 200	Green Changer
+  0 255   0	Green
+  0 127   0	Green Danger
+200 200 255	Blue Changer
+  0   0 255	Blue
+  0   0 127	Blue Danger
+255 255 200	Yellow Changer
+255 255   0	Yellow
+127 127   0	Yellow Danger
+255 200 255	Magenta Changer
+255   0 255	Magenta
+127   0 127	Magenta Danger
+200 255 255	Cyan Changer
+  0 255 255	Cyan
+  0 127 127	Cyan Danger
+255 255 255	None
+  0   0   0	Wall
+127 127 127	Ball
