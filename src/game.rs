@@ -8,7 +8,8 @@ use image as im;
 use ui::UI;
 
 
-static TILEMAP: &'static [u8] = include_bytes!("../assets/tiles_32x32.png");
+static TILEMAP_32: &'static [u8] = include_bytes!("../assets/tiles_32x32.png");
+static TILEMAP_16: &'static [u8] = include_bytes!("../assets/tiles_16x16.png");
 
 
 pub struct Game {
@@ -24,31 +25,33 @@ impl Game {
             .build()
             .unwrap();
 
-        let mut tilemap = Tilemap::new(im::load_from_memory(TILEMAP).unwrap(), 32, 32);
+        let mut tilemap32 = Tilemap::new(im::load_from_memory(TILEMAP_32).unwrap(), 32, 32);
+        let mut tilemap16 = Tilemap::new(im::load_from_memory(TILEMAP_16).unwrap(), 16, 16);
 
 
         let mut texture_manager = TextureManager::new();
-        texture_manager.load_from_buffer("tilemap", TILEMAP, &window);
-        texture_manager.load_from_image("bg_black", tilemap.get(2, 3), &window);
-        texture_manager.load_from_image("block_wall", tilemap.get(0, 3), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Red, tilemap.get(0, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Red, tilemap.get(0, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Red, tilemap.get(0, 2), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Green, tilemap.get(1, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Green, tilemap.get(1, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Green, tilemap.get(1, 2), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Blue, tilemap.get(2, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Blue, tilemap.get(2, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Blue, tilemap.get(2, 2), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Yellow, tilemap.get(3, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Yellow, tilemap.get(3, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Yellow, tilemap.get(3, 2), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Magenta, tilemap.get(4, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Magenta, tilemap.get(4, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Magenta, tilemap.get(4, 2), &window);
-        texture_manager.load_block_from_image(BlockType::Removable, Color::Cyan, tilemap.get(5, 0), &window);
-        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Cyan, tilemap.get(5, 1), &window);
-        texture_manager.load_block_from_image(BlockType::Changer, Color::Cyan, tilemap.get(5, 2), &window);
+        texture_manager.load_from_image("ball_white", tilemap16.get(0, 0), &window);
+
+        texture_manager.load_from_image("bg_black", tilemap32.get(2, 3), &window);
+        texture_manager.load_from_image("block_wall", tilemap32.get(0, 3), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Red, tilemap32.get(0, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Red, tilemap32.get(0, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Red, tilemap32.get(0, 2), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Green, tilemap32.get(1, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Green, tilemap32.get(1, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Green, tilemap32.get(1, 2), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Blue, tilemap32.get(2, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Blue, tilemap32.get(2, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Blue, tilemap32.get(2, 2), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Yellow, tilemap32.get(3, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Yellow, tilemap32.get(3, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Yellow, tilemap32.get(3, 2), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Magenta, tilemap32.get(4, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Magenta, tilemap32.get(4, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Magenta, tilemap32.get(4, 2), &window);
+        texture_manager.load_block_from_image(BlockType::Removable, Color::Cyan, tilemap32.get(5, 0), &window);
+        texture_manager.load_block_from_image(BlockType::Dangerous, Color::Cyan, tilemap32.get(5, 1), &window);
+        texture_manager.load_block_from_image(BlockType::Changer, Color::Cyan, tilemap32.get(5, 2), &window);
 
         let ui = UI::new(texture_manager);
 
@@ -68,9 +71,16 @@ impl Game {
                 Some(Event::Input(ref input)) => {
                     self.handle_input(input);
                 }
+                Some(Event::Update(ref update)) => {
+                    self.handle_update(update, &e);
+                }
                 _ => {}
             }
         }
+    }
+
+    pub fn handle_update(&mut self, update: &UpdateArgs, window: &PistonWindow) {
+        self.map.update(update.dt);
     }
 
     pub fn handle_input(&mut self, input: &Input) {

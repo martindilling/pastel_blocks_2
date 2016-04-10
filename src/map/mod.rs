@@ -1,9 +1,11 @@
 pub mod block;
+pub mod ball;
 
 use std::path::Path;
 use image;
 use image::GenericImage;
 use map::block::Block;
+use map::ball::Ball;
 
 pub type Cells = Vec<Vec<Block>>;
 
@@ -24,6 +26,7 @@ pub struct Map {
     width: usize,
     height: usize,
     cells: Cells,
+    ball: Ball,
 }
 
 impl Map {
@@ -69,6 +72,7 @@ impl Map {
             width: w,
             height: h,
             cells: cells,
+            ball: Ball::new((32.0*16.0)-8.0, (32.0*10.0)-8.0),
         }
     }
 
@@ -84,11 +88,19 @@ impl Map {
         &self.cells
     }
 
+    pub fn get_ball(&self) -> &Ball {
+        &self.ball
+    }
+
     pub fn switch(&mut self) {
         for rows in self.cells.iter_mut() {
             for cell in rows.iter_mut() {
                 cell.switch();
             }
         }
+    }
+
+    pub fn update(&mut self, delta: f64) {
+        self.ball.update(delta);
     }
 }

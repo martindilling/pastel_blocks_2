@@ -22,6 +22,7 @@ impl UI {
         window.draw_2d(|context, graphics| {
             clear([0.8, 0.8, 0.8, 1.0], graphics);
 
+            // Draw map
             for (y, rows) in map.get_cells().iter().enumerate() {
                 for (x, cell) in rows.iter().enumerate() {
                     let position = context.transform.trans(
@@ -42,6 +43,9 @@ impl UI {
                     }
                 }
             }
+
+            // Draw ball
+            image(self.textures.get("ball_white"), context.transform.trans(map.get_ball().x, map.get_ball().y), graphics);
         });
     }
 
